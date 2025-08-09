@@ -27,4 +27,9 @@ router.get("/:id", (req: Request, res: Response) => {
   res.json({ id, name: "Product 2", price: 2000 });
 });
 
+router.post("/", (req: Request, res: Response) => {
+  const body = req.body;
+  res.json({ message: "created", data: body });
+});
+
 export default router;
