@@ -1,48 +1,46 @@
 import { Request, Response, Router } from "express";
+import CategoryService from "../services/category.services";
 
 const router = Router();
+const service = new CategoryService();
 
-router.get(
-  "/:categoryId/products/:productId",
-  (req: Request, res: Response) => {
-    const { categoryId, productId } = req.params;
-    res.json({ categoryId, productId });
-  }
-);
-
-// POST: Crear un nuevo producto
-router.post("/:categoryId/products", (req: Request, res: Response) => {
-  const { categoryId } = req.params;
-  const { name, price, image } = req.body;
-  res.status(201).json({
-    message: "Product created successfully",
-    product: { categoryId, name, price, image },
-  });
+router.get("/", (req: Request, res: Response) => {
+  res.json(service.find());
 });
 
-// PATCH: Actualizar un producto específico
-router.patch(
-  "/:categoryId/products/:productId",
-  (req: Request, res: Response) => {
-    const { categoryId, productId } = req.params;
-    const { name, price, image } = req.body; // Nuevos valores a actualizar
-    // Lógica para actualizar el producto en la base de datos
-    res.json({
-      message: "Product updated successfully",
-      product: { categoryId, productId, name, price, image },
-    });
+router.get("/:id", (req: Request, res: Response) => {
+  const { id } = req.params;
+  if (!id) {
+    return res.status(400).json({ message: "ID is required" });
   }
-);
+  const category = service.findOne(id);
+  if (!category) return res.status(404).json({ message: "Category not found" });
+  res.json(category);
+});
 
-// DELETE: Eliminar un producto específico
-router.delete(
-  "/:categoryId/products/:productId",
-  (req: Request, res: Response) => {
-    const { categoryId, productId } = req.params;
-    res.json({
-      message: `Product with ID ${productId} from category ${categoryId} deleted successfully`,
-    });
+router.post("/", (req: Request, res: Response) => {
+  const newCategory = service.create(req.body);
+  res.status(201).json(newCategory);
+});
+
+router.patch("/:id", (req: Request, res: Response) => {
+  const { id } = req.params;
+  if (!id) {
+    return res.status(400).json({ message: "ID is required" });
   }
-);
+  const category = service.update(id, req.body);
+  if (!category) return res.status(404).json({ message: "Category not found" });
+  res.json(category);
+});
+
+router.delete("/:id", (req: Request, res: Response) => {
+  const { id } = req.params;
+  if (!id) {
+    return res.status(400).json({ message: "ID is required" });
+  }
+  const deleted = service.delete(id);
+  if (!deleted) return res.status(404).json({ message: "Category not found" });
+  res.status(204).send();
+});
 
 export default router;
