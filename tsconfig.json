@@ -3,6 +3,7 @@
     // Entradas y salidas
     "rootDir": "./src",
     "outDir": "./dist",
+    "moduleResolution": "node",
 
     // Compilación para Node.js
     "module": "commonjs",
