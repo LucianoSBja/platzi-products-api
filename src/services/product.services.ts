@@ -1,11 +1,5 @@
 import { faker } from "@faker-js/faker";
-
-export interface Product {
-  id: string;
-  name: string;
-  price: number;
-  image: string;
-}
+import { Product } from "../types/product.types";
 
 class ProductService {
   private products: Product[];
