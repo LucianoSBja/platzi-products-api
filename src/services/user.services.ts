@@ -16,7 +16,9 @@ class UserService {
         id: faker.string.uuid(),
         name: faker.person.fullName(),
         email: faker.internet.email(),
-        role: faker.helpers.arrayElement(["admin", "customer"]),
+        role: ["admin", "customer"][Math.floor(Math.random() * 2)] as
+          | "admin"
+          | "customer",
       });
     }
   }

@@ -12,7 +12,7 @@
   },
   "author": "Luciano Soto",
   "devDependencies": {
-    "@faker-js/faker": "^9.9.0",
+    "@faker-js/faker": "^10.0.0",
     "@types/express": "^5.0.3",
     "@types/node": "^18.11.9",
     "@typescript-eslint/eslint-plugin": "^5.42.0",
