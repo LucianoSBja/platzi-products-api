@@ -1,60 +1,52 @@
-import { Request, Response, Router } from "express";
+import { Request, Response, Router, NextFunction } from "express";
 import ProductService from "../services/product.services";
 
-const router = Router();
-
+const router: Router = Router();
 const service = new ProductService();
 
 router.get("/", (req: Request, res: Response) => {
-  const products = service.find();
-  res.json(products);
+  res.json(service.find());
 });
 
 router.get("/filter", (req: Request, res: Response) => {
   res.send("Yo soy un filter");
 });
 
-router.get("/:id", (req: Request, res: Response) => {
-  const { id } = req.params;
-  if (!id) {
-    return res.status(400).json({ message: "ID is required" });
+router.get("/:id", async (req: Request<{ id: string }>, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
+    res.json(service.findOne(id));
+  } catch (error) {
+    next(error);
   }
-  const product = service.findOne(id);
-  if (!product) {
-    return res.status(404).json({ message: "Product not found" });
-  }
-  res.json(product);
 });
 
-// POST
-router.post("/", (req: Request, res: Response) => {
-  const { name, price, image } = req.body;
-  const newProduct = service.create({ name, price, image });
-  res.status(201).json(newProduct);
+router.post("/", async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { name, price, image, isBlocked } = req.body;
+    res.status(201).json(service.create({ name, price, image, isBlocked }));
+  } catch (error) {
+    next(error);
+  }
 });
 
-router.patch("/:id", (req: Request, res: Response) => {
-  const { id } = req.params;
-  if (!id) {
-    return res.status(400).json({ message: "ID is required" });
+router.patch("/:id", async (req: Request<{ id: string }>, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
+    res.json(service.update(id, req.body));
+  } catch (error) {
+    next(error);
   }
-  const product = service.update(id, req.body);
-  if (!product) {
-    return res.status(404).json({ message: "Product not found" });
-  }
-  res.json(product);
 });
 
-router.delete("/:id", (req: Request, res: Response) => {
-  const { id } = req.params;
-  if (!id) {
-    return res.status(400).json({ message: "ID is required" });
+router.delete("/:id", async (req: Request<{ id: string }>, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
+    service.delete(id);
+    res.status(204).send();
+  } catch (error) {
+    next(error);
   }
-  const deleted = service.delete(id);
-  if (!deleted) {
-    return res.status(404).json({ message: "Product not found" });
-  }
-  res.status(204).send();
 });
 
 export default router;

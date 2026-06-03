@@ -1,7 +1,23 @@
 import { Category } from "../types/category.types";
+import { faker } from "@faker-js/faker";
 
 class CategoryService {
   private categories: Category[] = [];
+
+  constructor() {
+    this.generate();
+  }
+
+  private generate() {
+    const limit = 20;
+    for (let i = 0; i < limit; i++) {
+      this.categories.push({
+        id: faker.string.uuid(),
+        name: faker.commerce.department(),
+        description: faker.commerce.productDescription(),
+      });
+    }
+  }
 
   find() {
     return this.categories;
