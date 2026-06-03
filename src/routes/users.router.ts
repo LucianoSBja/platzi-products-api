@@ -1,43 +1,48 @@
-import { Request, Response, Router } from "express";
+import { Request, Response, Router, NextFunction } from "express";
 import UserService from "../services/user.services";
 
-const router = Router();
+const router: Router = Router();
 const service = new UserService();
 
-// GET all
 router.get("/", (req: Request, res: Response) => {
   res.json(service.find());
 });
 
-// GET one
-router.get("/:id", (req: Request<{ id: string }>, res: Response) => {
-  const { id } = req.params;
-  const user = service.findOne(id);
-  if (!user) return res.status(404).json({ message: "User not found" });
-  res.json(user);
+router.get("/:id", async (req: Request<{ id: string }>, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
+    res.json(service.findOne(id));
+  } catch (error) {
+    next(error);
+  }
 });
 
-// POST new
-router.post("/", (req: Request, res: Response) => {
-  const { name, email, role } = req.body;
-  const newUser = service.create({ name, email, role });
-  res.status(201).json(newUser);
+router.post("/", async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { name, email, role } = req.body;
+    res.status(201).json(service.create({ name, email, role }));
+  } catch (error) {
+    next(error);
+  }
 });
 
-// PATCH update
-router.patch("/:id", (req: Request<{ id: string }>, res: Response) => {
-  const { id } = req.params;
-  const updated = service.update(id, req.body);
-  if (!updated) return res.status(404).json({ message: "User not found" });
-  res.json(updated);
+router.patch("/:id", async (req: Request<{ id: string }>, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
+    res.json(service.update(id, req.body));
+  } catch (error) {
+    next(error);
+  }
 });
 
-// DELETE remove
-router.delete("/:id", (req: Request<{ id: string }>, res: Response) => {
-  const { id } = req.params;
-  const deleted = service.delete(id);
-  if (!deleted) return res.status(404).json({ message: "User not found" });
-  res.status(204).send();
+router.delete("/:id", async (req: Request<{ id: string }>, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
+    service.delete(id);
+    res.status(204).send();
+  } catch (error) {
+    next(error);
+  }
 });
 
 export default router;

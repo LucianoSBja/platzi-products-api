@@ -1,30 +1,22 @@
 {
   "compilerOptions": {
-    // Entradas y salidas
     "rootDir": "./src",
     "outDir": "./dist",
     "moduleResolution": "node",
-
-    // Compilación para Node.js
     "module": "commonjs",
-    "target": "es2020",
+    "target": "ES2020",
     "lib": ["es2020"],
     "types": ["node"],
-
-    // Archivos de salida
     "sourceMap": true,
     "declaration": true,
     "declarationMap": true,
-
-    // Reglas estrictas
     "strict": true,
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
-
-    // Módulos y estilo
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "ignoreDeprecations": "6.0"
   },
   "include": ["src"],
   "exclude": ["node_modules", "dist"]
