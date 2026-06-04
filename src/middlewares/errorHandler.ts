@@ -1,8 +1,12 @@
 import { Request, Response, NextFunction } from "express";
 import { HttpError } from "http-errors";
 
+interface HttpErrorWithErrors extends HttpError {
+  errors?: { field: string; message: string }[];
+}
+
 export const errorHandler = (
-  err: HttpError,
+  err: HttpErrorWithErrors,
   req: Request,
   res: Response,
   next: NextFunction
@@ -15,5 +19,6 @@ export const errorHandler = (
   res.status(status).json({
     statusCode: status,
     message,
+    ...(err.errors && { errors: err.errors }),
   });
 };
