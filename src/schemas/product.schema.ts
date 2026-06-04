@@ -10,5 +10,16 @@ export const createProductSchema = z.object({
 
 export const updateProductSchema = createProductSchema.partial();
 
+export const productParamsSchema = z.object({
+  id: z.uuid("El id debe ser un UUID válido"),
+});
+
+export const productQuerySchema = z.object({
+  limit: z.coerce.number().int().positive().default(10),
+  offset: z.coerce.number().int().min(0).default(0),
+});
+
 export type CreateProductDto = z.infer<typeof createProductSchema>;
 export type UpdateProductDto = z.infer<typeof updateProductSchema>;
+export type ProductParams = z.infer<typeof productParamsSchema>;
+export type ProductQuery = z.infer<typeof productQuerySchema>;

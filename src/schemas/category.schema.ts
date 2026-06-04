@@ -7,5 +7,10 @@ export const createCategorySchema = z.object({
 
 export const updateCategorySchema = createCategorySchema.partial();
 
+export const categoryParamsSchema = z.object({
+  id: z.uuid("El id debe ser un UUID válido"),
+});
+
 export type CreateCategoryDto = z.infer<typeof createCategorySchema>;
 export type UpdateCategoryDto = z.infer<typeof updateCategorySchema>;
+export type CategoryParams = z.infer<typeof categoryParamsSchema>;

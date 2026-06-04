@@ -2,9 +2,11 @@ import { Request, Response, NextFunction } from "express";
 import { ZodType } from "zod";
 import createError from "http-errors";
 
-export const validateSchema = (schema: ZodType) => {
+type RequestPart = "body" | "params" | "query";
+
+export const validateSchema = (schema: ZodType, part: RequestPart = "body") => {
   return (req: Request, res: Response, next: NextFunction) => {
-    const result = schema.safeParse(req.body);
+    const result = schema.safeParse(req[part]);
     if (!result.success) {
       const messages = result.error.issues.map((e) => ({
         field: e.path.join("."),
@@ -12,7 +14,7 @@ export const validateSchema = (schema: ZodType) => {
       }));
       return next(createError(400, "Datos inválidos", { errors: messages }));
     }
-    req.body = result.data;
+    req[part] = result.data;
     next();
   };
 };
